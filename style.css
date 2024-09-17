@@ -1,0 +1,208 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+/* Password Form Styles */
+#password-form {
+  background-image: url('footah.jpg'); /* Replace with actual image path */
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  padding: 20px; /* Add some padding to the form */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+#password-form .form-group {
+  margin-bottom: 10px;
+  width: 100%; /* Make form groups take full width */
+  max-width: 300px; /* Limit the maximum width of the form */
+}
+
+#password-form input[type="password"], 
+#password-form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+#password-form button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  width: 100%;
+}
+
+/* Loading Screen Styles */
+#loading-screen {
+  background-image: url('footah.jpg'); /* Replace with actual image path */
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+#red-dot-bar {
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  border-radius: 50%;
+  animation: redDotToGreenBar 6s infinite;
+  transition: width 2s ease;
+}
+
+.bar {
+  width: 100px;
+  height: 20px;
+  border-radius: 5%; /* Turns it into a bar */
+}
+
+/* Keyframe animation for the red dot transitioning to a green bar and back */
+@keyframes redDotToGreenBar {
+  0% {
+    width: 30px; /* Red dot */
+    background-color: red;
+    border-radius: 50%;
+  }
+  33% {
+    width: 100px; /* Green bar */
+    background-color: green;
+    border-radius: 5%;
+  }
+  100% {
+    width: 3px; /* Back to red dot */
+    background-color: red;
+    border-radius: 50%;
+  }
+}
+
+/* Game Container Styles */
+.container {
+  text-align: center;
+  display: none;
+  max-width: 800px;
+  width: 95%;
+  margin: 20px auto;
+}
+
+h1, h2 {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Card Grid Styles */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+  background-image: url('kiwanja.jpeg'); /* Replace with actual image path */
+  background-size: cover;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Individual Card Styles */
+.card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.3s;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  max-width: 150px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Result and Alert Styles */
+#result, #final-result, #unique-code {
+  display: none;
+  margin-top: 20px;
+  font-size: 1.5em;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  word-break: break-all;
+}
+
+#result {
+  color: green;
+  animation: fadeIn 2s forwards;
+}
+
+#final-result.win {
+  color: green;
+}
+
+#final-result.lose {
+  color: red;
+}
+
+#game-alert {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

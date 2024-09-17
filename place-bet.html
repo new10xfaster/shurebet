@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soccer Prediction Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <form id="password-form">
+    <div class="form-group">
+      <input type="password" id="password" placeholder="Enter Password" required>
+    </div>
+    <div class="form-group">
+      <input type="number" id="bet-amount" placeholder="Enter Bet Amount" required>
+    </div>
+    <button type="submit">Enter</button>
+  </form>
+
+  <div id="loading-screen">
+    <div id="red-dot-bar"></div>
+  </div>
+
+  <div class="container">
+    <h1>Kasarani Soccer Match</h1>
+
+    <div id="game-alert"></div>
+
+    <div class="cards"></div> 
+
+    <div id="result-container">
+      <div id="result">The match is ongoing...</div>
+      <div id="final-result"></div>
+      <div id="unique-code"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
