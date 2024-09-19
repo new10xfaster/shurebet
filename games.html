@@ -10,7 +10,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-image: url('footah.jpg'); 
+      background-image: url('footah.jpg');
       background-size: cover;
       background-position: center;
       margin: 0;
@@ -24,12 +24,12 @@
 
     /* Game Area Styling */
     .cards {
-      display: flex; 
+      display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      padding: 20px; 
-      background-image: url('kiwanja.jpeg'); 
+      padding: 20px;
+      background-image: url('kiwanja.jpeg');
       background-size: cover;
       border-radius: 10px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
@@ -60,7 +60,8 @@
     }
 
     /* Result Messages */
-    #result, #final-result {
+    #result,
+    #final-result {
       display: none;
       margin-top: 20px;
       font-size: 24px;
@@ -111,113 +112,178 @@
       margin: 0 5px;
     }
 
-    .red { background-color: red; }
-    .green { background-color: green; }
+    .red {
+      background-color: red;
+    }
+
+    .green {
+      background-color: green;
+    }
+
+    /* Add styles for win/loss statistics and messages */
+    #game-stats {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #win-probability {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Kasarani Soccer Match</h1>
+<div class="container">
+  <h1>Kasarani Soccer Match</h1>
 
-    <div class="probability-balls" id="probability-balls"></div>
-
-    <div id="game-alert"></div>
-    <div class="cards">
-      <div class="card" onclick="handleCardSelection(0)">
-        <img src="manu.png" alt="Man U">
-        <p>Man U</p>
-      </div>
-      <div class="card" onclick="handleCardSelection(1)">
-        <img src="chelsea.png" alt="Chelsea">
-        <p>Chelsea</p>
-      </div>
-      <div class="card" onclick="handleCardSelection(2)">
-        <img src="gor.jfif" alt="Gor Mahia">
-        <p>Gor Mahia</p>
-      </div>
-      <div class="card" onclick="handleCardSelection(3)">
-        <img src="logoharambee.png" alt="Harambee Stars">
-        <p>Harambee Stars</p>
-      </div>
-    </div>
-
-    <div id="final-result"></div>
+  <div id="game-stats">
+    <div id="win-probability"></div>
+    <div>Wins: <span id="win-count">0</span></div>
+    <div>Losses: <span id="loss-count">0</span></div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const cardsContainer = document.querySelector('.cards');
-      const finalResultMessage = document.getElementById('final-result');
-      const gameAlert = document.getElementById('game-alert');
-      const probabilityBallsContainer = document.getElementById('probability-balls');
+  <div class="probability-balls" id="probability-balls"></div>
 
-      let winProbability = 0.10; 
+  <div id="game-alert"></div>
+  <div class="cards">
+    <div class="card" onclick="handleCardSelection(0)">
+      <img src="manu.png" alt="Man U">
+      <p>Man U</p>
+    </div>
+    <div class="card" onclick="handleCardSelection(1)">
+      <img src="chelsea.png" alt="Chelsea">
+      <p>Chelsea</p>
+    </div>
+    <div class="card" onclick="handleCardSelection(2)">
+      <img src="gor.jfif" alt="Gor Mahia">
+      <p>Gor Mahia</p>
+    </div>
+    <div class="card" onclick="handleCardSelection(3)">
+      <img src="logoharambee.png" alt="Harambee Stars">
+      <p>Harambee Stars</p>
+    </div>
+  </div>
 
-      updateProbabilityBalls(winProbability);
+  <div id="final-result"></div>
+</div>
 
-      window.handleCardSelection = function(userChoice) {
-        cardsContainer.style.display = 'none';
-        gameAlert.style.display = 'none';
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const cardsContainer = document.querySelector('.cards');
+    const finalResultMessage = document.getElementById('final-result');
+    const gameAlert = document.getElementById('game-alert');
+    const probabilityBallsContainer = document.getElementById('probability-balls');
+    const winProbabilityElement = document.getElementById('win-probability');
+    const winCountElement = document.getElementById('win-count');
+    const lossCountElement = document.getElementById('loss-count');
 
-        const computerChoice = getBiasedComputerChoice(userChoice);
+    let winProbability = 0.10;
+    let winCount = 0;
+    let lossCount = 0;
+    let roundCount = 0; // Track the number of rounds played
+    const roundsPerMessage = 3; // Show message every 3 rounds
 
-        const userTeamName = document.querySelectorAll('.card')[userChoice].querySelector('p').textContent;
-        const computerTeamName = document.querySelectorAll('.card')[computerChoice].querySelector('p').textContent;
+    updateProbabilityBalls(winProbability);
+    winProbabilityElement.textContent = `Win Probability: ${winProbability * 100}%`;
 
-        if (userChoice === computerChoice) {
-          displayGameResult('win', "We tricked you with an almost win! That excitement makes you want to try again, right? But remember, you lose more often than you win. 😉");
-        } else {
-          let message = "You loose. 10% chance of matching your card, you lose, we profit! The winning team is " + computerTeamName + "."; 
-          displayGameResult('lose', message);
-        }
-      };
+    window.handleCardSelection = function (userChoice) {
+      cardsContainer.style.display = 'none';
+      gameAlert.style.display = 'none';
 
-      function getBiasedComputerChoice(userChoice) {
-        const randomValue = Math.random();
+      const computerChoice = getBiasedComputerChoice(userChoice);
 
-        if (randomValue < 0.9) {
-          let differentChoice = userChoice;
-          while (differentChoice === userChoice) {
-            differentChoice = Math.floor(Math.random() * 4);
-          }
-          return differentChoice;
-        } else {
-          return userChoice; 
-        }
+      const userTeamName = document.querySelectorAll('.card')[userChoice].querySelector('p').textContent;
+      const computerTeamName = document.querySelectorAll('.card')[computerChoice].querySelector('p').textContent;
+
+      roundCount++; // Increment round count after each selection
+
+      if (userChoice === computerChoice) {
+        displayGameResult('win', "We tricked you with an almost win! That excitement makes you want to try again, right? But remember, you lose more often than you win. 😉");
+      } else {
+        let message = "You loose. 10% chance of matching your card, you lose, we profit! The winning team is " + computerTeamName + ".";
+        displayGameResult('lose', message);
       }
 
-      function updateProbabilityBalls(winProbability) {
-        const numRedBalls = Math.round((1 - winProbability) * 4); 
-        const numGreenBalls = 4 - numRedBalls; 
+      // Show the message every 'roundsPerMessage' rounds
+      if (roundCount % roundsPerMessage === 0) {
+        showResponsibleGamingMessage();
+      }
+    };
 
-        probabilityBallsContainer.innerHTML = ''; 
+    function getBiasedComputerChoice(userChoice) {
+      const randomValue = Math.random();
 
-        for (let i = 0; i < numRedBalls; i++) {
-          const redBall = document.createElement('div');
-          redBall.classList.add('ball', 'red');
-          probabilityBallsContainer.appendChild(redBall);
+      if (randomValue < 0.9) {
+        let differentChoice = userChoice;
+        while (differentChoice === userChoice) {
+          differentChoice = Math.floor(Math.random() * 4);
         }
+        return differentChoice;
+      } else {
+        return userChoice;
+      }
+    }
 
-        for (let i = 0; i < numGreenBalls; i++) {
-          const greenBall = document.createElement('div');
-          greenBall.classList.add('ball', 'green');
-          probabilityBallsContainer.appendChild(greenBall);
-        }
+    function updateProbabilityBalls(winProbability) {
+      const numRedBalls = Math.round((1 - winProbability) * 4);
+      const numGreenBalls = 4 - numRedBalls;
+
+      probabilityBallsContainer.innerHTML = '';
+
+      for (let i = 0; i < numRedBalls; i++) {
+        const redBall = document.createElement('div');
+        redBall.classList.add('ball', 'red');
+        probabilityBallsContainer.appendChild(redBall);
       }
 
-      function displayGameResult(resultType, message) {
-        finalResultMessage.textContent = message;
-        finalResultMessage.classList.add(resultType);
-        showAlert(message, resultType); 
+      for (let i = 0; i < numGreenBalls; i++) {
+        const greenBall = document.createElement('div');
+        greenBall.classList.add('ball', 'green');
+        probabilityBallsContainer.appendChild(greenBall);
       }
+    }
 
-      function showAlert(message, type) {
-        gameAlert.textContent = message;
-        gameAlert.classList.add(type === 'win' ? 'alert-success' : 'alert-danger');
-        gameAlert.style.display = 'block'; 
+    function displayGameResult(resultType, message) {
+      finalResultMessage.textContent = message;
+      finalResultMessage.classList.add(resultType);
+      showAlert(message, resultType);
+
+      // Update win/loss statistics
+      updateWinLossStatistics(resultType);
+    }
+
+    function showAlert(message, type) {
+      gameAlert.textContent = message;
+      gameAlert.classList.add(type === 'win' ? 'alert-success' : 'alert-danger');
+      gameAlert.style.display = 'block';
+    }
+
+    function updateWinLossStatistics(resultType) {
+      if (resultType === 'win') {
+        winCount++;
+        winCountElement.textContent = winCount;
+      } else {
+        lossCount++;
+        lossCountElement.textContent = lossCount;
       }
-    });
-  </script>
+    }
+
+    function showResponsibleGamingMessage() {
+      const messages = [
+        "Remember, winning is based on chance, and the house often has an advantage.",
+        "Set a budget and stick to it. Have fun and play responsibly.",
+        "Taking a break? Here are some resources for help: <a href='https://www.gamblingtherapy.org/' target='_blank'>Gambling Therapy</a>", // Add a real link here
+      ];
+
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      alert(messages[randomIndex]);
+    }
+
+  });
+</script>
 </body>
 </html>
