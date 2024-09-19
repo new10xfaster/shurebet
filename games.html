@@ -10,7 +10,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-image: url('footah.jpg');
+      background-image: url('footah.jpg'); 
       background-size: cover;
       background-position: center;
       margin: 0;
@@ -18,52 +18,18 @@
       overflow-x: hidden;
     }
 
-    /* Container */
     .container {
       text-align: center;
     }
 
-    /* Loading Screen */
-    #loading-screen {
-      background-image: url('footah.jpg');
-      background-size: cover;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    #red-dot-bar {
-      width: 20px;
-      height: 20px;
-      background-color: red;
-      border-radius: 50%;
-      margin: 0 auto;
-      position: relative;
-      transition: all 1s ease;
-      z-index: 101;
-    }
-
-    .bar {
-      width: 100px;
-      height: 20px;
-      background-color: #ff0000;
-      border-radius: 0;
-    }
-
     /* Game Area Styling */
     .cards {
-      display: none; /* Initially hide the cards */
+      display: flex; 
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      padding: 20px; /* Adjusted padding */
-      background-image: url('kiwanja.jpeg');
+      padding: 20px; 
+      background-image: url('kiwanja.jpeg'); 
       background-size: cover;
       border-radius: 10px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
@@ -104,11 +70,6 @@
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     }
 
-    #result {
-      color: green;
-      animation: fadeIn 2s forwards;
-    }
-
     #final-result.win {
       color: green;
     }
@@ -136,24 +97,31 @@
       color: #721c24;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+    /* Probability Balls */
+    .probability-balls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
     }
+
+    .ball {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin: 0 5px;
+    }
+
+    .red { background-color: red; }
+    .green { background-color: green; }
   </style>
 </head>
 <body>
 
-  <div id="loading-screen">
-    <div id="red-dot-bar"></div>
-  </div>
-
   <div class="container">
     <h1>Kasarani Soccer Match</h1>
+
+    <div class="probability-balls" id="probability-balls"></div>
+
     <div id="game-alert"></div>
     <div class="cards">
       <div class="card" onclick="handleCardSelection(0)">
@@ -174,67 +142,80 @@
       </div>
     </div>
 
-    <div id="result">The match is ongoing...</div>
     <div id="final-result"></div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // --- Constants and DOM Elements ---
-      const loadingScreen = document.getElementById('loading-screen');
-      const redDotBar = document.getElementById('red-dot-bar');
       const cardsContainer = document.querySelector('.cards');
-      const resultMessage = document.getElementById('result');
       const finalResultMessage = document.getElementById('final-result');
       const gameAlert = document.getElementById('game-alert');
+      const probabilityBallsContainer = document.getElementById('probability-balls');
 
-      // --- Loading Screen Logic ---
-      setTimeout(() => {
-        redDotBar.classList.add('bar');
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-          cardsContainer.style.display = 'flex';
-        }, 5000);
-      }, 5000);
+      let winProbability = 0.10; 
 
-      // --- Handle Card Selection ---
+      updateProbabilityBalls(winProbability);
+
       window.handleCardSelection = function(userChoice) {
         cardsContainer.style.display = 'none';
-        resultMessage.style.display = 'block';
         gameAlert.style.display = 'none';
 
-        // Computer selects a card randomly
-        const computerChoice = Math.floor(Math.random() * 4); 
+        const computerChoice = getBiasedComputerChoice(userChoice);
 
-        // Get names of teams for user and computer's choices
         const userTeamName = document.querySelectorAll('.card')[userChoice].querySelector('p').textContent;
         const computerTeamName = document.querySelectorAll('.card')[computerChoice].querySelector('p').textContent;
 
-        setTimeout(() => {
-          resultMessage.style.display = 'none';
-          finalResultMessage.style.display = 'block';
-
-          if (userChoice === computerChoice) {
-            displayGameResult('win', "You win! It was a close match!");
-          } else {
-            let message = "You lose! The winning team is " + computerTeamName + ".";
-            displayGameResult('lose', message);
-          }
-        }, 9000);
+        if (userChoice === computerChoice) {
+          displayGameResult('win', "We tricked you with an almost win! That excitement makes you want to try again, right? But remember, you lose more often than you win. 😉");
+        } else {
+          let message = "You loose. 10% chance of matching your card, you lose, we profit! The winning team is " + computerTeamName + "."; 
+          displayGameResult('lose', message);
+        }
       };
 
-      // --- Display Game Result ---
+      function getBiasedComputerChoice(userChoice) {
+        const randomValue = Math.random();
+
+        if (randomValue < 0.9) {
+          let differentChoice = userChoice;
+          while (differentChoice === userChoice) {
+            differentChoice = Math.floor(Math.random() * 4);
+          }
+          return differentChoice;
+        } else {
+          return userChoice; 
+        }
+      }
+
+      function updateProbabilityBalls(winProbability) {
+        const numRedBalls = Math.round((1 - winProbability) * 4); 
+        const numGreenBalls = 4 - numRedBalls; 
+
+        probabilityBallsContainer.innerHTML = ''; 
+
+        for (let i = 0; i < numRedBalls; i++) {
+          const redBall = document.createElement('div');
+          redBall.classList.add('ball', 'red');
+          probabilityBallsContainer.appendChild(redBall);
+        }
+
+        for (let i = 0; i < numGreenBalls; i++) {
+          const greenBall = document.createElement('div');
+          greenBall.classList.add('ball', 'green');
+          probabilityBallsContainer.appendChild(greenBall);
+        }
+      }
+
       function displayGameResult(resultType, message) {
         finalResultMessage.textContent = message;
         finalResultMessage.classList.add(resultType);
-        showAlert(message, resultType);
+        showAlert(message, resultType); 
       }
 
-      // --- Alert Display Function ---
       function showAlert(message, type) {
         gameAlert.textContent = message;
         gameAlert.classList.add(type === 'win' ? 'alert-success' : 'alert-danger');
-        gameAlert.style.display = 'block';
+        gameAlert.style.display = 'block'; 
       }
     });
   </script>
